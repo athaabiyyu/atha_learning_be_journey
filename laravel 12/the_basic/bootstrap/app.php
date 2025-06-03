@@ -13,17 +13,22 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    // Global Middleware
+    
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(EnsureTokenIsValid::class);
-    })
 
-    // Middleware Groups
-    ->withMiddleware(function (Middleware $middleware) {
+        // Global Middleware
+        $middleware->append(EnsureTokenIsValid::class);
+
+        // Middleware Groups
         $middleware->appendToGroup('custom-group', [
             First::class,
             Second::class,
         ]);
+
+        // Middleware Aliases
+        $middleware->alias(['token', EnsureTokenIsValid::class]);
+        $middleware->alias(['first', First::class]);
+        $middleware->alias(['second', Second::class]);
     })
 
     ->withExceptions(function (Exceptions $exceptions) {
